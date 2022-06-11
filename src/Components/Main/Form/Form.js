@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { expenseCategories,incomeCategories } from '../../../constants/Constants';
 import formatDate from '../../../utils/formatDate';
 import { useSpeechContext } from '@speechly/react-client';
+import SnackbarReact from '../../snackbar/SnackbarReact';
 const Form = () => {
     const classes=useStyles();
     const initialState={
@@ -15,18 +16,27 @@ const Form = () => {
         amount:"",
         date:formatDate(new Date())
     }
-    console.log(formatDate(new Date()));
     const {deleteTransaction, addTransaction,transactions,name}=ExpenseState();
     const [formData,setData]=useState(initialState);
     const selectedCategories=formData.type==="Income"?incomeCategories:expenseCategories;
     const {segment}=useSpeechContext();
+    const [open,setOpen]=useState(false);
     const createTransaction=()=>{
         if(Number.isNaN(Number(formData.amount))) return;
-   const transaction={...formData,amount:Number(formData.amount),id:uuidv4()};
-   addTransaction(transaction);
+        if(Number(formData.amount>0)){
+           
+                const transaction={...formData,amount:Number(formData.amount),id:uuidv4()};
+                addTransaction(transaction);
+                setOpen(true);
+             
+                setData(initialState);
+            
+        }
+   
     }
     useEffect(()=>{
         if(segment){
+            console.log(segment.intent.intent);
             if(segment.intent.intent==="add_expense"){
                 setData({...formData,type:"Expense"});
             }else if(segment.intent.intent==="add_income"){
@@ -41,6 +51,7 @@ const Form = () => {
             }
     segment.entities.forEach((e)=>{
         const category=`${e.value.charAt(0)}${e.value.slice(1).toLowerCase()}`;
+        console.log(e.type);
 
         switch(e.type){
             case "amount":
@@ -63,6 +74,7 @@ const Form = () => {
     },[segment]);
   return (
     <Grid container spacing={2}>
+        <SnackbarReact open={open} setOpen={setOpen}/>
         <Grid item xs={12}>
           <Typography align="center" variant="subtitle2" gutterBottom style={{color:"green",fontStyle:"italic"}}>
            {

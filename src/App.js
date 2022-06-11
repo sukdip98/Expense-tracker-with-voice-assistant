@@ -11,18 +11,22 @@ function App() {
   return (
     <div>
       <Grid className={classess.grid} container spacing={0} alignItems="center" justifyContent="center" style={{height:"100vh"}}>
-       <Grid item xs={12} sm={4}>
+       <Grid item xs={12} sm={4} className={classess.mobile}>
        <Details title="Income"/>
        </Grid>
-       <Grid item xs={12} sm={3}>
+       <Grid item xs={12} sm={3} className={classess.main}>
        <Main/>
        </Grid>
-       <Grid item xs={12} sm={4}>
+       <Grid item xs={12} sm={4} className={classess.desktop}>
+       <Details title="Income"/>
+       </Grid>
+       <Grid item xs={12} sm={4} className={classess.last}>
 <Details title="Expense"/>
        </Grid>
+       
       </Grid>
-      <PushToTalkButtonContainer>
-        <PushToTalkButton/>
+      <PushToTalkButtonContainer >
+        <PushToTalkButton style={{marginTop:"35vh"}}/>
         <ErrorPanel/>
       </PushToTalkButtonContainer>
     </div>
